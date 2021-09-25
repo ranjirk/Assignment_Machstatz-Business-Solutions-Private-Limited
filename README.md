@@ -7,3 +7,7 @@ _________________________________________________________
 * question_2.py
 
 	Finds machine's runtime, downtime & utilization for a given interval of time
+
+* question_3.py
+
+	Finds belt's average for a given interval of time
