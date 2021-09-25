@@ -1,15 +1,14 @@
-# https://gitlab.com/-/snippets/2094509/raw/master/sample_json_3.json
-
 import flask, requests, datetime, datetimerange, json
 from datetimerange import DateTimeRange
 from flask import request
 
-class productivity:
-	def __init__(self):
+class belt_calculation:
+	def __init__(self, start, end):
 		self.url_json = "https://gitlab.com/-/snippets/2094509/raw/master/sample_json_3.json"
-
-	def center(self, start, end):
 		self.start_time, self.end_time, self.key, self.final_list = start, end, [], []
+		self.time_range = DateTimeRange(self.start_time, self.end_time)
+
+	def center(self):
 		self.json_data = requests.get(self.url_json).json()
 		for self.ele in self.json_data :
 			self.ele_type = type(self.ele["id"])
@@ -21,7 +20,6 @@ class productivity:
 		for self.element in self.json_data :
 			self.cur_time = self.element["time"]+ "Z"
 			self.cur_time = self.cur_time.replace(" ", "T")
-			self.time_range = DateTimeRange(self.start_time, self.end_time)
 			if self.cur_time in self.time_range:
 				if self.element["state"] :
 					self.tmp_belt_1, self.tmp_belt_2 = 0, self.element["belt2"]
@@ -56,9 +54,8 @@ app = flask.Flask(__name__)
 def hello():
 	start_time = request.args.get('start_time', default = '-1', type = str)
 	end_time = request.args.get('end_time', default = '-1', type = str)
-	obj = productivity()
-	res = obj.center(start_time, end_time)
+	obj = belt_calculation(start_time, end_time)
+	res = obj.center()
 	json_list = json.dumps(res)
 	return json_list
 app.run(debug=True, host="0.0.0.0", port=8000)
-#  http://192.168.1.3:8000/hello
